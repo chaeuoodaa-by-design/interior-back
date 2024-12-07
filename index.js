@@ -6,7 +6,7 @@ const server = http.createServer((req, res) => {
     res.end('Hello World\n');
 });
 
-const port = 3000;
+const port = 8000;
 const hostname = '127.0.0.1';
 
 server.listen(port, hostname, () => {
