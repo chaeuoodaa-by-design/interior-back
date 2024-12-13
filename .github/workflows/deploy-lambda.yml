@@ -38,7 +38,7 @@ jobs:
 
       # 5. 코드 압축 (ZIP 파일 생성)
       - name: Create ZIP File
-        run: zip -r lambda.zip . -x "node_modules/*" ".github/*" ".git/*"
+        run: zip -r lambda.zip . -x ".github/*" ".git/*"
 
       # 6. AWS CLI 설정
       - name: Configure AWS CLI

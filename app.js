@@ -6,7 +6,7 @@ app.use(express.json());
 
 // 라우트 설정
 app.get('/', (req, res) => {
-    res.json({ message: 'Hello from Lambda!' });
+    res.send({ message: 'Hello from Lambda!' });
 });
 
 app.get('/users', (req, res) => {
