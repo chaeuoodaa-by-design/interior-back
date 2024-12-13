@@ -49,7 +49,7 @@ jobs:
           aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
           aws configure set default.region $AWS_DEFAULT_REGION
 
-      # 7. Lambda 함수 배포
+      # 7. Lambda Deployment
       - name: Deploy to Lambda
         env:
           FUNCTION_NAME: "my-lambda-function" # Lambda 함수 이름
@@ -57,7 +57,19 @@ jobs:
           aws lambda update-function-code \
             --function-name $FUNCTION_NAME \
             --zip-file fileb://lambda.zip
+              # 4. API Gateway Deployment
 
-      # 8. 배포 성공 메시지
+      # 8. API Gateway Deployment
+
+      - name: Redeploy API Gateway
+        env:
+          API_ID: "mw2ba1706j"  # API Gateway ID
+        run: |
+          # 스테이지 재배포
+          aws apigateway create-deployment \
+          --rest-api-id $API_ID \
+          --stage-name prod
+
+      # 9. 배포 성공 메시지
       - name: Deployment Success
         run: echo "Lambda function deployed successfully!"
