@@ -13,4 +13,9 @@ app.get('/users', (req, res) => {
     res.json({ users: [{ id: 1, name: 'Tester' }] });
 });
 
+// 나머지 경로 처리
+app.all('*', (req, res) => {
+    res.status(404).json({ message: 'Route not found' });
+});
+
 module.exports = app;
