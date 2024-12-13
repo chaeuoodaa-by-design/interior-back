@@ -32,7 +32,9 @@ jobs:
 
       # 4. 의존성 설치
       - name: Install Dependencies
-        run: npm install
+        run: |
+          npm install
+          npm install serverless-http
 
       # 5. 코드 압축 (ZIP 파일 생성)
       - name: Create ZIP File
