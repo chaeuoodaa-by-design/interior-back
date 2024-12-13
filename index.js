@@ -1,15 +1,4 @@
-const http = require('http');
-// let payload = require("utils/payload-utils");
+const serverlessExpress = require('@vendia/serverless-express');
+const app = require('./app'); // Express 앱을 불러옵니다.
 
-const server = http.createServer((req, res) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    res.end('Hello World\n');
-});
-
-const port = 8000;
-const hostname = '127.0.0.1';
-
-server.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
-});
+exports.handler = serverlessExpress({ app });

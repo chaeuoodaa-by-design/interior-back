@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@vendia/serverless-express": "^4.12.6",
     "express": "^4.21.2",
     "express-generator": "^4.16.1",
     "figlet": "^1.8.0"

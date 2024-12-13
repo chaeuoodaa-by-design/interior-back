@@ -1,0 +1,63 @@
+name: Deploy Lambda Function
+
+on:
+  push:
+    branches:
+      - main  # main 브랜치에 푸시될 때 트리거
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 코드 체크아웃
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # 2. Node.js 환경 설정
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22.12.9' # Node.js 버전 지정
+          cache: 'npm'            # npm 캐시 활성화
+
+      # 3. 의존성 캐싱
+      - name: Cache Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # 4. 의존성 설치
+      - name: Install Dependencies
+        run: npm install
+
+      # 5. 코드 압축 (ZIP 파일 생성)
+      - name: Create ZIP File
+        run: zip -r lambda.zip . -x "node_modules/*" ".github/*" ".git/*"
+
+      # 6. AWS CLI 설정
+      - name: Configure AWS CLI
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "ap-northeast-2" # AWS 리전
+        run: |
+          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+          aws configure set default.region $AWS_DEFAULT_REGION
+
+      # 7. Lambda 함수 배포
+      - name: Deploy to Lambda
+        env:
+          FUNCTION_NAME: "my-lambda-function" # Lambda 함수 이름
+        run: |
+          aws lambda update-function-code \
+            --function-name $FUNCTION_NAME \
+            --zip-file fileb://lambda.zip
+
+      # 8. 배포 성공 메시지
+      - name: Deployment Success
+        run: echo "Lambda function deployed successfully!"
