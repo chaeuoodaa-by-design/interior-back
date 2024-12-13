@@ -10,7 +10,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/users', (req, res) => {
-    res.json({ users: [{ id: 1, name: 'John Doe' }] });
+    res.json({ users: [{ id: 1, name: 'Tester' }] });
 });
 
 module.exports = app;

@@ -34,7 +34,7 @@ jobs:
       - name: Install Dependencies
         run: |
           npm install
-          npm install serverless-http
+          npm install aws-serverless-express
 
       # 5. 코드 압축 (ZIP 파일 생성)
       - name: Create ZIP File
