@@ -3,7 +3,7 @@ name: Deploy Lambda Function
 on:
   push:
     branches:
-      - main  # main 브랜치에 푸시될 때 트리거
+      - master  # main 브랜치에 푸시될 때 트리거
 
 jobs:
   deploy:
@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '22.12.9' # Node.js 버전 지정
+          node-version: '22.12.0' # Node.js 버전 지정
           cache: 'npm'            # npm 캐시 활성화
 
       # 3. 의존성 캐싱
