@@ -8,3 +8,11 @@ exports.handler = (event, context) => {
     // Lambda 요청을 Express로 전달
     awsServerlessExpress.proxy(server, event, context);
 };
+
+// 로컬 실행 시 Express 서버 시작
+if (require.main === module) {
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log(`Server running on http://localhost:${PORT}`);
+    });
+}
