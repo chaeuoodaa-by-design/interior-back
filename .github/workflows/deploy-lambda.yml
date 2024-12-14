@@ -35,6 +35,7 @@ jobs:
         run: |
           npm install
           npm install aws-serverless-express
+          npm install @aws-sdk/client-dynamodb @aws-sdk/lib-dynamodb
 
       # 5. 코드 압축 (ZIP 파일 생성)
       - name: Create ZIP File
