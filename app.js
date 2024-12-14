@@ -22,6 +22,11 @@ const { DynamoDBDocumentClient, PutCommand, GetCommand, UpdateCommand, DeleteCom
  * export AWS_SECRET_ACCESS_KEY=your-secret-access-key
  * export AWS_REGION=your-region (서울리전 -> ap-northeast-2)
  *
+ *
+ * dynamodb
+ * 테이블명 portfolio
+ * 파티션키 image_name (String)
+ * 정렬 키  image_no  (Number)
 * */
 
 // DynamoDB 클라이언트 생성
