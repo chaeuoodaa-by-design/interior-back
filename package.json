@@ -6,15 +6,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
-
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.712.0",
-    "@aws-sdk/lib-dynamodb": "^3.712.0",
+    "@aws-sdk/client-dynamodb": "^3.716.0",
+    "@aws-sdk/client-s3": "^3.717.0",
+    "@aws-sdk/lib-dynamodb": "^3.716.0",
     "@vendia/serverless-express": "^4.12.6",
+    "aws-sdk": "^2.1692.0",
     "aws-serverless-express": "^3.4.0",
+    "busboy": "^1.6.0",
     "express": "^4.21.2",
     "express-generator": "^4.16.1",
     "figlet": "^1.8.0",
