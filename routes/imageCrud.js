@@ -27,7 +27,7 @@ router.post('/upload', async (req, res) => {
         if (fieldname === 'image_name') {
             imageName = value;
         } else if (fieldname === 'metadata') {
-            metadata = JSON.parse(value);
+            metadata = JSON.   parse(value);
         }
     });
 
