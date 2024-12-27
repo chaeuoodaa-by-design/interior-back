@@ -1,8 +1,13 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 
 // 미들웨어 설정
 app.use(express.json());
+
+app.use(cors({
+    origin: '*',
+}));
 
 // 라우트 파일 연결
 const dynamodbRoutes = require('./routes/dynamodb');

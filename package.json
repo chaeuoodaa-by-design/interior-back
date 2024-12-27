@@ -17,6 +17,7 @@
     "aws-sdk": "^2.1692.0",
     "aws-serverless-express": "^3.4.0",
     "busboy": "^1.6.0",
+    "cors": "^2.8.5",
     "express": "^4.21.2",
     "express-generator": "^4.16.1",
     "figlet": "^1.8.0",
