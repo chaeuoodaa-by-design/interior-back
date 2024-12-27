@@ -3,7 +3,7 @@ const express = require('express');
 const Busboy = require('busboy');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
-const { DynamoDBDocumentClient, PutCommand } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDBDocumentClient, PutCommand, QueryCommand} = require('@aws-sdk/lib-dynamodb');
 
 const router = express.Router();
 
@@ -23,16 +23,16 @@ router.post('/upload', async (req, res) => {
     let fileBuffer = null;
 
     // 폼 데이터 처리
-    busboy.on('field', (fieldname, value) => {
-        if (fieldname === 'image_name') {
+    busboy.on('field', (fieldName, value) => {
+        if (fieldName === 'image_name') {
             imageName = value;
-        } else if (fieldname === 'metadata') {
+        } else if (fieldName === 'metadata') {
             metadata = JSON.parse(value);
         }
     });
 
     // 파일 데이터 처리
-    busboy.on('file', (fieldname, file) => {
+    busboy.on('file', (fieldName, file) => {
         const chunks = [];
         file.on('data', (chunk) => chunks.push(chunk));
         file.on('end', () => {
@@ -97,20 +97,20 @@ router.post('/upload-multiple', async (req, res) => {
     const images = [];
 
     // 폼 데이터 처리
-    busboy.on('field', (fieldname, value) => {
-        if (fieldname === 'image_group') {
+    busboy.on('field', (fieldName, value) => {
+        if (fieldName === 'image_group') {
             imageGroup = value;
-        } else if (fieldname === 'metadata') {
+        } else if (fieldName === 'metadata') {
             metadata = JSON.parse(value);
         }
     });
 
     // 파일 데이터 처리
-    busboy.on('file', (fieldname, file, filename) => {
+    busboy.on('file', (fieldName, file, fileName) => {
         const chunks = [];
         file.on('data', (chunk) => chunks.push(chunk));
         file.on('end', () => {
-            images.push({ filename, buffer: Buffer.concat(chunks) });
+            images.push({ fileName, buffer: Buffer.concat(chunks) });
         });
     });
 
@@ -124,9 +124,9 @@ router.post('/upload-multiple', async (req, res) => {
             const savedImages = [];
 
             for (let i = 0; i < images.length; i++) {
-                const { filename, buffer } = images[i];
+                const { fileName, buffer } = images[i];
                 const imageId = `${imageGroup}-${i + 1}`; // image_group + 순번
-                const s3Key = `uploads/${imageGroup}/${imageId}-${filename}`;
+                const s3Key = `uploads/${imageGroup}/${imageId}-${fileName}`;
 
                 // S3 업로드
                 const uploadParams = {
