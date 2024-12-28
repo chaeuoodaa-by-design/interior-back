@@ -19,7 +19,8 @@ jobs:
         run: |
           aws lambda update-function-configuration \
             --function-name my-lambda-function \
-            --environment "Variables={AUTH_IDENTIFICATION=$AUTH_IDENTIFICATION}"
+            --environment "Variables={AUTH_IDENTIFICATION=$AUTH_IDENTIFICATION}" \
+            --region ap-northeast-2
 
 
       # 1. 코드 체크아웃
