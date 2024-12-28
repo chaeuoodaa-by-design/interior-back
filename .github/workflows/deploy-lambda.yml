@@ -64,7 +64,7 @@ jobs:
         run: |
           aws lambda update-function-configuration \
             --function-name my-lambda-function \
-            --environment "Variables={\"AUTH_IDENTIFICATION\":\"$AUTH_IDENTIFICATION\",\"AUTH_PASSWORD\":\"$AUTH_PASSWORD\",\"AUTH_JWT_SECRET_KEY\":\"$AUTH_JWT_SECRET_KEY\"}"
+            --environment Variables="{\"AUTH_IDENTIFICATION\":\"$AUTH_IDENTIFICATION\",\"AUTH_PASSWORD\":\"$AUTH_PASSWORD\",\"AUTH_JWT_SECRET_KEY\":\"$AUTH_JWT_SECRET_KEY\"}"
 
 
       # 7. Lambda Deployment
