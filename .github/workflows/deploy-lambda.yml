@@ -11,18 +11,6 @@ jobs:
 
     steps:
 
-      # Lambda 환경 변수 설정
-      - name: Deploy Lambda with Env Variables
-        env:
-          AUTH_IDENTIFICATION: ${{ secrets.AUTH_IDENTIFICATION }}
-          AUTH_PASSWORD: ${{ secrets.PASSWORD }}
-        run: |
-          aws lambda update-function-configuration \
-            --function-name my-lambda-function \
-            --environment "Variables={AUTH_IDENTIFICATION=$AUTH_IDENTIFICATION}" \
-            --region ap-northeast-2
-
-
       # 1. 코드 체크아웃
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -43,12 +31,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
+
       # 4. 의존성 설치
       - name: Install Dependencies
         run: |
           npm install
           npm install aws-serverless-express
           npm install @aws-sdk/client-dynamodb @aws-sdk/lib-dynamodb
+
 
       # 5. 코드 압축 (ZIP 파일 생성)
       - name: Create ZIP File
@@ -64,6 +54,17 @@ jobs:
           aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
           aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
           aws configure set default.region $AWS_DEFAULT_REGION
+
+      # Lambda 환경 변수 설정
+      - name: Set Lambda Environment Variables
+        env:
+          AUTH_IDENTIFICATION: ${{ secrets.AUTH_IDENTIFICATION }}
+          AUTH_PASSWORD: ${{ secrets.AUTH_PASSWORD }}
+          AUTH_JWT_SECRET_KEY: ${{ secrets.AUTH_JWT_SECRET_KEY }}
+        run: |
+          aws lambda update-function-configuration \
+            --function-name my-lambda-function \
+            --environment "Variables={\"AUTH_IDENTIFICATION\":\"$AUTH_IDENTIFICATION\",\"AUTH_PASSWORD\":\"$AUTH_PASSWORD\",\"AUTH_JWT_SECRET_KEY\":\"$AUTH_JWT_SECRET_KEY\"}"
 
       # 7. Lambda Deployment
       - name: Deploy to Lambda
