@@ -10,6 +10,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      # Lambda 환경 변수 설정
+      - name: Deploy Lambda with Env Variables
+        env:
+          AUTH_IDENTIFICATION: ${{ secrets.AUTH_IDENTIFICATION }}
+          AUTH_PASSWORD: ${{ secrets.PASSWORD }}
+        run: |
+          aws lambda update-function-configuration \
+            --function-name my-lambda-function \
+            --environment "Variables={AUTH_IDENTIFICATION=$AUTH_IDENTIFICATION}"
+
+
       # 1. 코드 체크아웃
       - name: Checkout Code
         uses: actions/checkout@v3
