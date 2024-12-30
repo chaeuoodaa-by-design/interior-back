@@ -55,18 +55,6 @@ jobs:
           aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
           aws configure set default.region $AWS_DEFAULT_REGION
 
-      # Lambda 환경 변수 설정
-#      - name: Set Lambda Environment Variables
-#        env:
-#          AUTH_IDENTIFICATION: ${{ secrets.AUTH_IDENTIFICATION }}
-#          AUTH_PASSWORD: ${{ secrets.AUTH_PASSWORD }}
-#          AUTH_JWT_SECRET_KEY: ${{ secrets.AUTH_JWT_SECRET_KEY }}
-#        run: |
-#          aws lambda update-function-configuration \
-#            --function-name my-lambda-function \
-#            --environment Variables="{\"AUTH_IDENTIFICATION\":\"$AUTH_IDENTIFICATION\",\"AUTH_PASSWORD\":\"$AUTH_PASSWORD\",\"AUTH_JWT_SECRET_KEY\":\"$AUTH_JWT_SECRET_KEY\"}"
-
-
       # 7. Lambda Deployment
       - name: Deploy to Lambda
         env:

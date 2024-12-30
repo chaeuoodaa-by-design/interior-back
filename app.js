@@ -23,7 +23,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use('/api/dynamodb', dynamodbRoutes);
 app.use('/api/sns', snsRoutes);
 app.use('/api/images', imageCrudRoutes); // 이미지 업로드 관련
-app.use('/api/auth', authRoutes); // 이미지 업로드 관련
+app.use('/api/auth', authRoutes);
 
 // 나머지 경로 처리
 app.all('*', (req, res) => {
