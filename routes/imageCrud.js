@@ -89,7 +89,58 @@ router.post('/upload', async (req, res) => {
     req.pipe(busboy); // 요청 데이터를 Busboy로 전달
 });
 
-// 이미지 여러 개 저장
+/**
+ * @swagger
+ * /api/images/upload-multiple:
+ *   post:
+ *     summary: 여러 이미지를 특정 그룹에 업로드
+ *     tags:
+ *      - image
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               image_group:
+ *                 type: string
+ *                 description: 이미지를 포함할 그룹
+ *               metadata:
+ *                 type: string
+ *                 description: 이미지에 대한 메타데이터 (JSON 형식)
+ *               files:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *                 description: 업로드할 이미지 파일들
+ *     responses:
+ *       201:
+ *         description: 이미지 업로드 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 savedImages:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       image_id:
+ *                         type: string
+ *                       s3_url:
+ *                         type: string
+ *                       order:
+ *                         type: integer
+ *       400:
+ *         description: image_group 또는 파일이 누락된 경우
+ *       500:
+ *         description: 서버 오류
+ */
 router.post('/upload-multiple', async (req, res) => {
     const busboy =  Busboy({ headers: req.headers });
     let imageGroup = null;
@@ -192,7 +243,52 @@ router.post('/upload-multiple', async (req, res) => {
 
     req.pipe(busboy);
 });
-// 대표 이미지 가져오기
+
+/**
+ * @swagger
+ * /api/images/image-group/{image_group}/title:
+ *   get:
+ *     summary: 특정 그룹의 대표 이미지 조회
+ *     tags:
+ *      - image
+ *     description: 특정 그룹에 설정된 대표 이미지를 조회합니다.
+ *     parameters:
+ *       - in: path
+ *         name: image_group
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: 조회할 이미지 그룹 ID
+ *     responses:
+ *       200:
+ *         description: 대표 이미지 조회 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 titleImage:
+ *                   type: object
+ *                   properties:
+ *                     image_group:
+ *                       type: string
+ *                     image_id:
+ *                       type: string
+ *                     s3_url:
+ *                       type: string
+ *                     metadata:
+ *                       type: object
+ *                     is_title:
+ *                       type: boolean
+ *                     order:
+ *                       type: integer
+ *       404:
+ *         description: 대표 이미지를 찾을 수 없는 경우
+ *       500:
+ *         description: 서버 오류
+ */
 router.get('/image-group/:image_group/title', async (req, res) => {
     const { image_group } = req.params;
 
@@ -225,10 +321,41 @@ router.get('/image-group/:image_group/title', async (req, res) => {
     }
 });
 
-
-
-
-// 파티션 키에 해당하는 모든 이미지
+/**
+ * @swagger
+ * /api/images/image-group/{image_group}/images:
+ *   get:
+ *     summary: 특정 그룹의 모든 이미지 조회
+ *     tags:
+ *      - image
+ *     description: 파티션 키에 해당하는 그룹의 모든 이미지를 조회합니다.
+ *     parameters:
+ *       - in: path
+ *         name: image_group
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: 조회할 이미지 그룹 ID
+ *     responses:
+ *       200:
+ *         description: 이미지 리스트 조회 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 imageUrls:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                     description: 이미지 URL
+ *       404:
+ *         description: 이미지를 찾을 수 없는 경우
+ *       500:
+ *         description: 서버 오류
+ */
 router.get('/image-group/:image_group/images', async (req, res) => {
     const { image_group } = req.params;
 
@@ -262,7 +389,7 @@ router.get('/image-group/:image_group/images', async (req, res) => {
     }
 });
 
-
+// 이미지 수정
 router.post('/image-group/:image_group/manage', async (req, res) => {
     const { image_group } = req.params;
     const busboy = new Busboy({ headers: req.headers });
@@ -396,8 +523,94 @@ router.post('/image-group/:image_group/manage', async (req, res) => {
     req.pipe(busboy);
 });
 
+/**
+ * @swagger
+ * /api/images/delete-group/{image_group}:
+ *   delete:
+ *     summary: 특정 이미지 그룹의 모든 이미지 및 메타데이터 삭제
+ *     tags:
+ *      - image
+ *     description: 주어진 이미지 그룹에 속한 모든 이미지와 메타데이터를 삭제합니다.
+ *     parameters:
+ *       - in: path
+ *         name: image_group
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: 삭제할 이미지 그룹 ID
+ *     responses:
+ *       200:
+ *         description: 이미지와 메타데이터가 성공적으로 삭제됨
+ *       400:
+ *         description: image_group 파라미터가 누락된 경우
+ *       404:
+ *         description: 해당 이미지 그룹에 항목이 없는 경우
+ *       500:
+ *         description: 서버 오류
+ */
+router.delete('/delete-group/:image_group', async (req, res) => {
+    const imageGroup = req.params.image_group;
 
+    try {
+        if (!imageGroup) {
+            return res.status(400).json({ message: 'image_group 파라미터가 누락되었습니다.' });
+        }
 
+        // DynamoDB에서 해당 그룹의 모든 항목 조회
+        const queryParams = {
+            TableName: TABLE_NAME,
+            KeyConditionExpression: 'image_group = :image_group',
+            ExpressionAttributeValues: {
+                ':image_group': imageGroup,
+            },
+        };
+
+        const result = await dynamodb.send(new QueryCommand(queryParams));
+        const items = result.Items || [];
+
+        if (items.length === 0) {
+            return res.status(404).json({ message: '해당 그룹에 대한 항목이 없습니다.' });
+        }
+
+        const deletePromises = [];
+
+        // S3에서 이미지 삭제
+        for (const item of items) {
+            if (item.s3_url) {
+                const s3Key = item.s3_url.split(`https://${BUCKET_NAME}.s3.amazonaws.com/`)[1];
+
+                if (s3Key) {
+                    deletePromises.push(s3Client.send(new DeleteObjectCommand({
+                        Bucket: BUCKET_NAME,
+                        Key: s3Key,
+                    })));
+                }
+            }
+
+            // DynamoDB에서 항목 삭제
+            deletePromises.push(dynamodb.send(new DeleteCommand({
+                TableName: TABLE_NAME,
+                Key: {
+                    image_group: item.image_group,
+                    image_id: item.image_id,
+                },
+            })));
+        }
+
+        // 모든 삭제 작업 완료 대기
+        await Promise.all(deletePromises);
+
+        res.status(200).json({
+            message: '이미지와 관련 데이터가 성공적으로 삭제되었습니다.',
+            deletedCount: items.length,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: '삭제 중 오류가 발생했습니다.',
+            error: error.message,
+        });
+    }
+});
 
 
 

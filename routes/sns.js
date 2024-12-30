@@ -1,9 +1,3 @@
-/**
- * DB 없이
- * API 만 이후는 로직 처리
- * @type {e | (() => Express)}
- */
-
 const express = require('express');
 const AWS = require('aws-sdk');
 

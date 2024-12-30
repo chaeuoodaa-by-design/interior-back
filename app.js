@@ -1,6 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocs = require("./swagger/swaggerConfig");
+
 
 // 미들웨어 설정
 app.use(express.json());
@@ -18,6 +21,7 @@ const imageCrudRoutes = require('./routes/imageCrud');
 app.use('/api/dynamodb', dynamodbRoutes);
 app.use('/api/sns', snsRoutes);
 app.use('/api/images', imageCrudRoutes); // 이미지 업로드 관련
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // 나머지 경로 처리
 app.all('*', (req, res) => {
