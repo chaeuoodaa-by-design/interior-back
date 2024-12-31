@@ -14,6 +14,10 @@ const dynamodb = DynamoDBDocumentClient.from(dynamoClient);
 const BUCKET_NAME = 'chaeuda-portfolio';
 const TABLE_NAME = 'cwd-portfolio';
 
+let AWS = require("aws-sdk");
+let docClient = new AWS.DynamoDB.DocumentClient({ region: 'ap-northeast-2' });
+
+
 // use authMiddleWare
 const authenticate = require("./authMiddleWare");
 
@@ -615,6 +619,31 @@ router.delete('/delete-group/:image_group', async (req, res) => {
     }
 });
 
+router.get('/partition-keys', async (req, res) => {
+    const params = {
+        TableName: TABLE_NAME,
+        ProjectionExpression: 'image_group', // 필요한 속성만 조회
+    };
+
+    try {
+        let items = [];
+        const data = await docClient.scan(params).promise();
+        items = data.Items;
+
+        const uniqueItemGroups = [...new Set(items.map(item => item.image_group))];
+
+        res.status(200).json({
+            data: uniqueItemGroups
+        });
+    } catch (error) {
+        console.error('Error scanning DynamoDB:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to fetch partition keys',
+            error: error.message,
+        });
+    }
+});
 
 
 
