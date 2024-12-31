@@ -1,11 +1,10 @@
 const express = require('express');
-
+const router = express.Router();
 const Busboy = require('busboy');
+
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const { DynamoDBDocumentClient, PutCommand, QueryCommand } = require('@aws-sdk/lib-dynamodb');
-
-const router = express.Router();
 
 // AWS SDK 설정
 const s3Client = new S3Client({ region: 'ap-northeast-2' });
@@ -14,6 +13,9 @@ const dynamodb = DynamoDBDocumentClient.from(dynamoClient);
 
 const BUCKET_NAME = 'chaeuda-portfolio';
 const TABLE_NAME = 'cwd-portfolio';
+
+// use authMiddleWare
+const authenticate = require("./authMiddleWare");
 
 // 이미지 업로드 및 DynamoDB 저장
 router.post('/upload', async (req, res) => {
