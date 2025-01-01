@@ -619,6 +619,24 @@ router.delete('/delete-group/:image_group', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/images/partition-keys:
+ *   get:
+ *     summary: Portfolio 페이지 데이터 call (제목, 대표 이미지, Carrousel 이미지들)
+ *     tags:
+ *      - image
+ *     description: Portfolio Card Data Call
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: None
+ *       404:
+ *         description: Not Found Route
+ *       500:
+ *         description: Internal Server Error
+ */
 router.get('/partition-keys', async (req, res) => {
     const params = {
         TableName: TABLE_NAME,
@@ -667,9 +685,6 @@ router.get('/partition-keys', async (req, res) => {
         });
     }
 });
-
-
-
 
 
 module.exports = router;
