@@ -626,14 +626,37 @@ router.get('/partition-keys', async (req, res) => {
     };
 
     try {
+        const finalData = [];
+
         let items = [];
         const data = await docClient.scan(params).promise();
         items = data.Items;
 
         const uniqueItemGroups = [...new Set(items.map(item => item.image_group))];
 
+        for (const item of uniqueItemGroups) {
+            const params2 = {
+                TableName: TABLE_NAME,
+                KeyConditionExpression: 'image_group = :image_group', // 파티션 키 조건
+                ExpressionAttributeValues: {
+                    ':image_group': item,
+                },
+            };
+
+            const result = await dynamodb.send(new QueryCommand(params2));
+
+            // 단일 객체로 추가
+            const groupData = {
+                titleImage: result.Items[0]['s3_url'],
+                imageGroup: result.Items[0]['image_group'],
+                urls: result.Items.map(i => i.s3_url), // s3_url 배열로 추출
+            };
+
+            finalData.push(groupData);
+        }
+
         res.status(200).json({
-            data: uniqueItemGroups
+            data: finalData,
         });
     } catch (error) {
         console.error('Error scanning DynamoDB:', error);
@@ -644,6 +667,7 @@ router.get('/partition-keys', async (req, res) => {
         });
     }
 });
+
 
 
 
