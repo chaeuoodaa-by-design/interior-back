@@ -23,14 +23,11 @@ router.post('/login', (req, res) => {
 });
 
 router.get('/auth-check', (req, res, next) => {
-    console.log(req.headers);
     const token = req.headers.authorization?.split(' ')[1];
-    console.log(token);
     if (!token) return res.json({ message: 'Unauthorized' });
 
     try {
         req.user = jwt.verify(token, SECRET_KEY);
-        console.log('req.user', req.user);
         res.json({ message: 'ok' });
         // next();
     } catch (err) {
