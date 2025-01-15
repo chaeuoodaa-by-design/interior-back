@@ -129,5 +129,9 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-
+# JetBrain Data
 .idea
+
+# Keys
+keys/private_key.pem
+keys/public_key.pem

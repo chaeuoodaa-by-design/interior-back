@@ -15,7 +15,9 @@ router.post('/send-message', async (req, res) => {
         return res.status(400).json({ error: 'name, phoneNumber, and content are required.' });
     }
 
-    const message = `${name} 님께서 상담을 요청했습니다.\n` +
+    const message = `[안내❗] \n` +
+        `채우다 바이 인테리어 \n` +
+        `${name} 님께서 상담을 요청했습니다.\n` +
         `연락처: ${phoneNumber}\n` +
         `상담 내용:\n${content}`;
 

@@ -24,16 +24,20 @@ router.post('/login', (req, res) => {
 
 router.get('/auth-check', (req, res, next) => {
     const token = req.headers.authorization?.split(' ')[1];
-    if (!token) return res.json({ message: 'Unauthorized' });
+    if (!token) return res.json({message: 'Unauthorized'});
 
     try {
         req.user = jwt.verify(token, SECRET_KEY);
-        res.json({ message: 'ok' });
+        res.json({message: 'ok'});
         // next();
     } catch (err) {
-        res.json({ message: 'Forbidden' });
+        res.json({message: 'Forbidden'});
     }
-})
+});
+
+router.get('/api/auth/pub-key/r', (req, res) => {
+
+});
 
 
 module.exports = router;
